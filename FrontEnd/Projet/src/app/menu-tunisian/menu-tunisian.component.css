@@ -1,0 +1,25 @@
+body {
+    padding-top: 80px;
+  }
+  
+  .show-cart li {
+    display: flex;
+  }
+  .card {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    
+
+  }
+  .card-img-top {
+    width: 285px;
+    height: 200px;
+    align-self: center;
+  }
+  .m{z-index: -1;}
+
+  .horizontal {
+    display: flex;
+    justify-content: space-between;
+    z-index: -1;
+}
