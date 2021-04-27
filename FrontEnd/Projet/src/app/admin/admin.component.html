@@ -1,0 +1,314 @@
+
+<html>
+<div class="container">
+<body>
+ 
+<section class="section3">
+  <div class="hiuser">
+      <h2>Welcome back <span id="name-user">Admin</span>!</h2>
+      <br>
+      <br>
+  </div>
+  <div class="flex-container">
+    <button type="button" id="button" class="btn btn-dark s" data-toggle="modal" onclick="document.getElementById('exampleModal').style.display='block'" data-target="#exampleModal" data-backdrop='static' data-keyboard='false'> add dish 
+    </button>
+    <button type="button" name="dang ky"  class="btn btn-dark s" (click)="imaaa()" >Get access </button>
+    <div class="member">
+      <div class="delete">
+        <div class="overplay"></div>
+        <div class="choice-delete">
+            <i class="fas fa-times"></i>
+            <h1>Do you delete?</h1>
+            <button type="button" name="cancel-delete" class="btn">Cancel</button>
+            <button type="button" name="yes-delete" class="btn" >Delete</button>
+        </div>
+      </div>
+      <br>
+      <h3 style="color: chocolate;">Dessert</h3>
+      <br>
+      <div style="overflow-x:auto;">
+      <li *ngFor=" let dessert of desserts, let i = index">
+      <table class="content-member">
+        <thead>
+            <tr class="name-row">
+                <th>food Name</th>
+               
+                <th>Description</th>
+                <th>Price</th>
+               
+                <th>Image</th>
+                <th>Adresse</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="edit" id="nom1" >{{dessert.nom_dish}}</td>
+            <td class="edit" id="d1">{{dessert.desc_dish}}</td>
+            <td class="edit" id="p1">{{dessert.price_dish}}</td>
+            <img class="card-img-top edit" src="{{dessert.img_dish}}"alt="Card image cap" style="width:150px; height: 100px;">
+            <td class="edit" id="ad1">{{dessert.adresse_dish}}</td>
+            <td class="edit-save">
+              <button type="button" name="edit" class="edit-member">Edit</button>
+              <button type="button" name="save" class="save-member" >okay</button>
+
+              <button type="button" name="save" class="save-member btn-dark" (click)="updat1(dessert.nom_dish,dessert.desc_dish)">Save</button>
+            </td>
+            <td><button type="button" name="delete" class="delete-member btn-dark" (click)="delete1(dessert.nom_dish)">Delete</button></td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </li>
+  </div>
+    <br>
+    <br>
+    <h3 style="color: chocolate;">Tunisian food</h3>
+    <br>
+    <div style="overflow-x:auto;">
+    <li *ngFor=" let tunisian of tunisians">
+      <table class="content-member">
+        <thead>
+            <tr class="name-row">
+                <th>food Name</th>
+               
+                <th>Description</th>
+                <th>Price</th>
+               
+                <th>Image</th>
+                <th>Adresse</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="edit" id="nom2" >{{tunisian.nom_dish}}</td>
+            <td class="edit" id="d2" >{{tunisian.desc_dish}}</td>
+            <td class="edit"  id="p2">{{tunisian.price_dish}}</td>
+          
+            <img class="card-img-top" src="{{tunisian.img_dish }}"alt="Card image cap" style="width:150px; height: 100px;">
+            <td class="edit" id="ad2" >{{tunisian.adresse_dish}}</td>
+            <td class="edit-save">
+              <button type="button" name="edit" class="edit-member"  >Edit</button>
+           
+              <button type="button" name="save" class="save-member" >SAve</button>
+              <button type="button" name="save" class="save-member btn-dark" (click)="updat2(tunisian.nom_dish)">upload</button>
+            
+            </td>
+            <td><button type="button" name="delete" class="delete-member btn-dark" (click)="delete2(tunisian.nom_dish)"  >Delete</button></td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </li>
+  </div>
+    <br>
+    <br>
+    <h3 style="color: chocolate;">Italian food</h3>
+    <br>
+    <div style="overflow-x:auto;">
+    <li *ngFor=" let italian of italians">
+      <table class="content-member">
+        <thead>
+            <tr class="name-row">
+                <th>food Name</th>
+               
+                <th>Description</th>
+                <th>Price</th>
+               
+                <th>Image</th>
+                <th>Adresse</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="edit" id="nom3" >{{italian.nom_dish}}</td>
+            <td class="edit"id="d3" >{{italian.desc_dish}}</td>
+            <td class="edit"id="p3">{{italian.price_dish}}</td>
+          
+            <img class="card-img-top" src="{{italian.img_dish }}"alt="Card image cap" style="width:150px; height: 100px;">
+            <td class="edit" id="ad3" >{{italian.adresse_dish}}</td>
+            <td class="edit-save">
+              <button type="button" name="edit" class="edit-member"  >Edit</button>
+           
+              <button type="button" name="save" class="save-member" >SAve</button>
+              <button type="button" name="save" class="save-member btn-dark" (click)="updat5(italian.nom_dish)" >upload</button>
+            
+            </td>
+            <td><button type="button" name="delete" class="delete-member btn-dark" (click)="delete3(italian.nom_dish)"  >Delete</button></td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </li>
+  </div>
+    <br>
+    <br>
+    <h3 style="color: chocolate;">french food</h3>
+    <br>
+    <div style="overflow-x:auto;">
+    <li *ngFor=" let french of frenchs">
+      <table class="content-member">
+     
+        <thead>
+            <tr class="name-row">
+                <th>food Name</th>
+               
+                <th>Description</th>
+                <th>Price</th>
+               
+                <th>Image</th>
+                <th>Adresse</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="edit" id="nom4" >{{french.nom_dish}}</td>
+            <td class="edit" id="d4">{{french.desc_dish}}</td>
+            <td class="edit"id="p4">{{french.price_dish}}</td>
+          
+            <img class="card-img-top" src="{{french.img_dish }}"alt="Card image cap" style="width:150px; height: 100px;">
+            <td class="edit" id="ad4" >{{french.adresse_dish}}</td>
+            <td class="edit-save">
+              <button type="button" name="edit" class="edit-member"  >Edit</button>
+           
+              <button type="button" name="save" class="save-member" >SAve</button>
+              <button type="button" name="save" class="save-member btn-dark"(click)="updat4(french.nom_dish)" >upload</button>
+            
+            </td>
+            <td><button type="button" name="delete" class="delete-member btn-dark" (click)="delete4(french.nom_dish)"  >Delete</button></td>
+          </tr>
+          
+        </tbody>
+     
+      </table>
+    </li>
+    </div>
+    <br>
+    <br>
+    <h3 style="color: chocolate;">Asian food</h3>
+    <br>
+    <div style="overflow-x:auto;">
+    <li *ngFor=" let asian of asians">
+      <table class="content-member">
+        <thead>
+            <tr class="name-row">
+                <th>food Name</th>
+               
+                <th>Description</th>
+                <th>Price</th>
+               
+                <th>Image</th>
+                <th>Adresse</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="edit" id="nom5">{{asian.nom_dish}}</td>
+            <td class="edit" id="d5">{{asian.desc_dish}}</td>
+            <td class="edit"id="p5">{{asian.price_dish}}</td>
+          
+            <img class="card-img-top" src="{{asian.img_dish }}"alt="Card image cap" style="width:150px; height: 100px;">
+            <td class="edit" id="ad5" >{{asian.adresse_dish}}</td>
+            <td class="edit-save">
+              <button type="button" name="edit" class="edit-member">Edit</button>
+              <button type="button" name="save" class="save-member">SAve</button>
+              <button type="button" name="save" class="save-member btn-dark" (click)="updat3(asian.nom_dish)">upload</button>
+            </td>
+            <td><button type="button" name="delete" class="delete-member btn-dark " (click)="delete5(asian.nom_dish)">Delete</button></td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </li>
+    </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</div>
+
+<div style="width:600px;"> 
+<!-- Modal -->
+<div class="modal fade"  id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color:transparent;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Menu</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="File" method="post" enctype="multipart/form-data"  >
+          <div class="modal-body">
+            <table class="show-cart table">
+             
+            </table>
+           
+            <div class="box">
+              <div class="js--image-preview">
+              <div class="upload-options">
+                <label>
+                 
+                  <input type="file" class="image-upload c" id="img" (change)="onSelectFile($event)">
+                  
+                </label>
+              </div>
+            </div>
+          </div>
+            
+       
+        
+          
+            <img [src]="url">
+            <label for="nom" style="color:beige"><h3>food Name </h3> </label>
+        <input type="text" id="nom" name="nom"><br><br>
+        <label for="type"style="color:beige; margin-left:5px"><h3>type  </h3></label>
+        <select name="type" id="type">
+          <option value="Dessert">dessert</option>
+          <option value="Asian">asian</option>
+          <option value="Tunisian">tunisian</option>
+          <option value="Italian">italian</option>
+          <option value="French">french</option>
+        </select>
+        <br>
+        <label for="desc"style="color:beige"><h3>Description:  </h3></label>
+        <textarea id="desc" name="comment" form="usrform">Enter your text here...</textarea><br><br>
+        <label for="lastname"style="color:beige"><h3>Address: </h3> </label>
+        <input type="text" id="ad" name="ad"   ><br><br>
+        <label for="price"style="color:beige"><h3>price:</h3> </label>
+        <input type="price" id="price" name="price"><br><br>
+        </div> 
+        
+        
+        
+          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <td><input type="submit" class=" btn btn-dark"  (click)="Add()"value="Submit"></td>
+          </div>
+        </form>
+        
+           </div>
+      </div>
+     
+      </div>
+    </div>
+
+
+  
