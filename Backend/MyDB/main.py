@@ -95,7 +95,7 @@ def signup(payload: SignupRequest):
             (payload.name, payload.email, payload.password),
         )
         db.commit()
-        return {"done": True}
+        return [{"nom": payload.name, "email": payload.email}]
     finally:
         cursor.close()
         db.close()
@@ -135,7 +135,7 @@ def add_dish(payload: DishRequest):
             ),
         )
         db.commit()
-        return {"done": True}
+        return [{"nom": payload.name, "price": payload.price, "type": payload.category, "desc": payload.description, "ad": payload.address}]
     finally:
         cursor.close()
         db.close()
@@ -166,6 +166,32 @@ def delete_dish(category: str, name: str):
     finally:
         cursor.close()
         db.close()
+
+
+
+@app.delete("/delete1")
+def delete_dessert_legacy(name: str = ""):
+    return delete_dish("dessert", name)
+
+
+@app.delete("/delete2")
+def delete_tunisian_legacy(name: str = ""):
+    return delete_dish("tunisian", name)
+
+
+@app.delete("/delete3")
+def delete_italian_legacy(name: str = ""):
+    return delete_dish("italian", name)
+
+
+@app.delete("/delete4")
+def delete_french_legacy(name: str = ""):
+    return delete_dish("french", name)
+
+
+@app.delete("/delete5")
+def delete_asian_legacy(name: str = ""):
+    return delete_dish("asian", name)
 
 
 @app.put("/{category}/{name}")
