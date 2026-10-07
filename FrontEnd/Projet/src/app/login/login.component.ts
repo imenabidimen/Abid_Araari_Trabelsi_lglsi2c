@@ -2,7 +2,6 @@ import { environment } from '../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 
 
-declare function signo():any ;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,9 +11,7 @@ export class LoginComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit():void {
-    signo();
-  }
+  ngOnInit():void {}
   async LoginClick(){
     var user = (<HTMLInputElement>document.getElementById("nom")).value;
     var pwd =(<HTMLInputElement>document.getElementById("pwd1")).value;
