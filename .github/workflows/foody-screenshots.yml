@@ -1,0 +1,79 @@
+name: Foody screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - "docs/screenshots/**"
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FrontEnd/Projet
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 14
+        uses: actions/setup-node@v4
+        with:
+          node-version: "14.21.3"
+          cache: npm
+          cache-dependency-path: FrontEnd/Projet/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npm run build
+
+      - name: Install Playwright
+        run: npm install --no-save playwright@1.30.0
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve built app
+        run: npx http-server dist/Projet -p 4200 -c-1 > /tmp/foody-http.log 2>&1 &
+
+      - name: Capture browser screenshots
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+
+            await page.goto('http://127.0.0.1:4200/', { waitUntil: 'networkidle' });
+            await page.screenshot({ path: '../../docs/screenshots/01-home.png', fullPage: true });
+
+            await page.goto('http://127.0.0.1:4200/signup', { waitUntil: 'networkidle' });
+            await page.screenshot({ path: '../../docs/screenshots/02-sign-up.png', fullPage: true });
+
+            await page.goto('http://127.0.0.1:4200/login', { waitUntil: 'networkidle' });
+            await page.screenshot({ path: '../../docs/screenshots/03-login.png', fullPage: true });
+
+            await browser.close();
+          })();
+          NODE
+
+      - name: Commit screenshots
+        working-directory: .
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots
+          if git diff --cached --quiet; then
+            echo "No screenshot changes."
+            exit 0
+          fi
+          git commit -m "docs: refresh Foody screenshots [skip ci]"
+          git push
