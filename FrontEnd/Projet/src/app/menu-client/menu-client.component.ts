@@ -22,7 +22,7 @@ export class MenuClientComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     
-    const rep = await fetch(${environment.apiUrl}/salade");
+    const rep = await fetch(`${environment.apiUrl}/salade`);
     if (rep.ok){
     
       rep.json().then(data =>{//raj3etlna objet json data
