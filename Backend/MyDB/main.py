@@ -1,6 +1,7 @@
 import os
 from typing import Any
 
+import bcrypt
 import mysql.connector
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -73,6 +74,23 @@ def rows_as_dicts(cursor) -> list[dict[str, Any]]:
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(password: str, stored_password: str) -> bool:
+    if stored_password.startswith("$2"):
+        try:
+            return bcrypt.checkpw(
+                password.encode("utf-8"),
+                stored_password.encode("utf-8"),
+            )
+        except ValueError:
+            return False
+
+    return password == stored_password
+
+
 def dish_table(category: str) -> str:
     table = DISH_TABLES.get(category.lower())
     if not table:
@@ -91,8 +109,15 @@ def signup(payload: SignupRequest):
     cursor = db.cursor()
     try:
         cursor.execute(
+            "SELECT 1 FROM signup WHERE nom = %s OR email = %s LIMIT 1",
+            (payload.name, payload.email),
+        )
+        if cursor.fetchone():
+            raise HTTPException(status_code=409, detail="Account already exists")
+
+        cursor.execute(
             "INSERT INTO signup(nom, email, password) VALUES (%s, %s, %s)",
-            (payload.name, payload.email, payload.password),
+            (payload.name, payload.email, hash_password(payload.password)),
         )
         db.commit()
         return [{"nom": payload.name, "email": payload.email}]
@@ -107,10 +132,22 @@ def login(payload: LoginRequest):
     cursor = db.cursor()
     try:
         cursor.execute(
-            "SELECT nom, password FROM signup WHERE nom = %s AND password = %s",
-            (payload.user, payload.password),
+            "SELECT nom, password FROM signup WHERE nom = %s LIMIT 1",
+            (payload.user,),
         )
-        return rows_as_dicts(cursor)
+        account = cursor.fetchone()
+
+        if not account or not verify_password(payload.password, account[1]):
+            return []
+
+        if not account[1].startswith("$2"):
+            cursor.execute(
+                "UPDATE signup SET password = %s WHERE nom = %s",
+                (hash_password(payload.password), payload.user),
+            )
+            db.commit()
+
+        return [{"nom": account[0]}]
     finally:
         cursor.close()
         db.close()
