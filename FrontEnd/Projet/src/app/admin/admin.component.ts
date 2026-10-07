@@ -69,6 +69,7 @@ export class AdminComponent implements OnInit {
     var pwd = (<HTMLInputElement>document.getElementById("pwd")).value;
     const response = await fetch("http://127.0.0.1:8000/user", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${user}","pwd":"${pwd}"}`
     });
     if (response.ok) {
@@ -105,24 +106,17 @@ export class AdminComponent implements OnInit {
     var ad = (<HTMLInputElement>document.getElementById("ad")).value;
     const response = await fetch("http://127.0.0.1:8000/add", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"nom":"${nom}" , "type":"${type}" ,"ad":"${ad}", "price":"${price}" , "desc":"${desc}" , "img":"${this.url}" }`
     });
 
     if (response.ok) {
       response.json().then(function (data) {
-        if (JSON.stringify(data) != "[]") {
-          let datas = JSON.parse(JSON.stringify(data));
-          localStorage.setItem("nom", datas["0"].nom);
-          localStorage.setItem("price", datas["0"].price);
-          localStorage.setItem("type", datas["0"].type);
-          localStorage.setItem("desc", datas["0"].desc);
-          localStorage.setItem("ad", datas["0"].ad);
+        if (data && data.ok) {
           window.location.reload();
-          alert("done")
-
-        }
-        else {
-          alert("  error detected ")
+          alert("done");
+        } else {
+          alert("Error detected");
         }
 
       });
@@ -147,6 +141,7 @@ export class AdminComponent implements OnInit {
   async delete1(name: string) {  
     const response = await fetch("http://127.0.0.1:8000/delete1", {
       method: 'delete',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
@@ -224,6 +219,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad1")).innerHTML;
     const response = await fetch("http://127.0.0.1:8000/update1", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -252,6 +248,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad2")).innerHTML;
     const response = await fetch("http://127.0.0.1:8000/update2", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -287,6 +284,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad5")).innerHTML;
     const response = await fetch("http://127.0.0.1:8000/update3", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -324,6 +322,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad4")).innerHTML;
     const response = await fetch("http://127.0.0.1:8000/update4", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -360,6 +359,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad3")).innerHTML;
     const response = await fetch("http://127.0.0.1:8000/update5", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {

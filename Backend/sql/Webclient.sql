@@ -37,8 +37,7 @@ CREATE TABLE `signup` (
 -- Dumping data for table `signup`
 --
 
-INSERT INTO `signup` (`nom`, `email`, `password`) VALUES
-('imen', 'abidimen2000@gmail.com', 'eya');
+-- No demo credentials are committed. Create an account through POST /forum.
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

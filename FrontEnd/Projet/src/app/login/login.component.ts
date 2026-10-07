@@ -1,56 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-
-
-declare function signo():any ;
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
-})
+import { environment } from '../../environments/environment';
+declare function signo(): any;
+@Component({ selector:'app-login', templateUrl:'./login.component.html', styleUrls:['./login.component.css'] })
 export class LoginComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit():void {
-    signo();
+  constructor() {}
+  ngOnInit(): void { signo(); }
+  async LoginClick(): Promise<void> {
+    const user=(document.getElementById('nom') as HTMLInputElement).value.trim();
+    const pwd=(document.getElementById('pwd1') as HTMLInputElement).value;
+    if(!user || !pwd){ alert('Please enter your username and password.'); return; }
+    try {
+      const response=await fetch(environment.apiUrl+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user,pwd})});
+      if(!response.ok){ const error=await response.json().catch(()=>({})); alert(error.detail||'Invalid username or password.'); return; }
+      const account=await response.json();
+      localStorage.setItem('nom',account.nom); localStorage.setItem('email',account.email||'');
+      window.location.href='/menu1';
+    } catch { alert('Unable to reach the API. Make sure the backend is running.'); }
   }
-  async LoginClick(){
-    var user = (<HTMLInputElement>document.getElementById("nom")).value;
-    var pwd =(<HTMLInputElement>document.getElementById("pwd1")).value;
-    if ((user=="admin") &&( pwd=="admin")){
-     
-      window.open("/admin");
-      
-    }else{
-    const response = await fetch("http://127.0.0.1:8000/login", {
-      method: 'POST',
-      body:`{"user":"${user}","pwd":"${pwd}"}`});
-      if(response.ok){
-          response.json().then(function(data){
-            if (JSON.stringify(data) !="[]"){
-              let datas=  JSON.parse(JSON.stringify(data));
-              localStorage.setItem("nom" , datas["0"].nom);
-              localStorage.setItem("prenom" , datas["0"].prenom);
-              window.location.href='/menu1';
-              window.open("/menu1");
-              alert(" welocome to foody world ")
-              
-            }
-            else{
-              alert(" No account found ")
-            }
-            
-          });
-        }
-        
-          
-
 }
-
-}
-}
-
-
-
-
-
