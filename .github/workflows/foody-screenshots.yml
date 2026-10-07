@@ -54,6 +54,17 @@ jobs:
             const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
             await page.goto('http://127.0.0.1:4200/', { waitUntil: 'networkidle' });
+            await page.waitForTimeout(1000);
+
+            const brokenImages = await page.locator('.carousel-inner img').evaluateAll((images) =>
+              images.filter((image) => !image.complete || image.naturalWidth === 0)
+                .map((image) => image.getAttribute('src'))
+            );
+
+            if (brokenImages.length > 0) {
+              throw new Error('Broken home carousel images: ' + brokenImages.join(', '));
+            }
+
             await page.screenshot({ path: '../../docs/screenshots/01-home.png', fullPage: true });
 
             await page.goto('http://127.0.0.1:4200/signup', { waitUntil: 'networkidle' });
