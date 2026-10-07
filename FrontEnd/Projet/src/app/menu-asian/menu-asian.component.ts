@@ -14,7 +14,7 @@ export class MenuAsianComponent implements OnInit {
   constructor() { }
 
   async ngOnInit(): Promise<void> {
-    const rep = await fetch(${environment.apiUrl}/asian");
+    const rep = await fetch(`${environment.apiUrl}/asian`);
     if (rep.ok){
     
       rep.json().then(data =>{//raj3etlna objet json data
