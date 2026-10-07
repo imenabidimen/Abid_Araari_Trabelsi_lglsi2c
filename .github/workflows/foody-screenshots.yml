@@ -42,6 +42,17 @@ jobs:
       - name: Serve built app
         run: npx http-server@14 dist/Projet -p 4200 -c-1 > /tmp/foody-http.log 2>&1 &
 
+      - name: Wait for frontend
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4200/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/foody-http.log
+          exit 1
+
       - name: Capture browser screenshots
         run: |
           mkdir -p ../../docs/screenshots
