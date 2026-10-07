@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 14.21.3
+      - name: Install dependencies
+        working-directory: FrontEnd/Projet
+        run: npm install
+      - name: Production build
+        working-directory: FrontEnd/Projet
+        run: npm run build -- --configuration production
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Compile Python sources
+        run: python -m py_compile Backend/MyDB/main.py
