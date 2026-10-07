@@ -1,13 +1,20 @@
-from typing import Optional
-from fastapi import FastAPI , Request
+import os
+from typing import Any
+
 import mysql.connector
-import json
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-app = FastAPI()
+from pydantic import BaseModel
+
+
+app = FastAPI(title="Foody API", version="1.0.0")
+
 origins = [
-    "http://localhost",
-    "http://localhost:4200",
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "http://localhost:4200").split(",")
+    if origin.strip()
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -15,208 +22,178 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-@app.post("/forum")
-async def db_data(request : Request):
 
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "Webclient")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"INSERT into signup(nom, email,password) VAlUES( '{body['nom']}','{body['email']}','{body['pwd1']}')")
-    mydb.commit()
+DISH_TABLES = {
+    "tunisian": "Tunisian",
+    "dessert": "Dessert",
+    "asian": "Asian",
+    "italian": "Italian",
+    "french": "French",
+}
+
+
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
+
+class LoginRequest(BaseModel):
+    user: str
+    password: str
+
+
+class DishRequest(BaseModel):
+    name: str
+    description: str
+    price: str
+    image: str
+    address: str
+
+
+class DishUpdateRequest(BaseModel):
+    name: str
+    description: str
+    price: str
+    address: str
+
+
+def connect(database: str):
+    return mysql.connector.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", "3306")),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", ""),
+        database=database,
+    )
+
+
+def rows_as_dicts(cursor) -> list[dict[str, Any]]:
+    columns = [column[0] for column in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+def dish_table(category: str) -> str:
+    table = DISH_TABLES.get(category.lower())
+    if not table:
+        raise HTTPException(status_code=404, detail="Unknown dish category")
+    return table
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.post("/forum")
+def signup(payload: SignupRequest):
+    db = connect("Webclient")
+    try:
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO signup(nom, email, password) VALUES (%s, %s, %s)",
+            (payload.name, payload.email, payload.password),
+        )
+        db.commit()
+        return {"done": True}
+    finally:
+        cursor.close()
+        db.close()
+
 
 @app.post("/login")
-async def db_test(request : Request):
+def login(payload: LoginRequest):
+    db = connect("Webclient")
+    try:
+        cursor = db.cursor()
+        cursor.execute(
+            "SELECT nom, password FROM signup WHERE nom = %s AND password = %s",
+            (payload.user, payload.password),
+        )
+        return rows_as_dicts(cursor)
+    finally:
+        cursor.close()
+        db.close()
 
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "Webclient")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"SELECT nom, password from signup where nom='{body['user']}' and password='{body['pwd']}'")
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-            json_data.append(dict(zip(row_headers,result)))
-    return json_data
-    
+
 @app.post("/add")
-async def add(request:Request):
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    
-    mycursor.execute(f"INSERT INTO `{body['type']}`( nom_dish, desc_dish, price_dish , img_dish,adresse_dish) VALUES ( '{body['nom']}', '{body['desc']}', '{body['price']}'  , '{body['img']}','{body['ad']}');")
-    mydb.commit()
-    return {"done"}
-
-    
-@app.get("/tunisian")
-def gets():
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM Tunisian")
-  
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    return json_data
-@app.get("/dessert")
-def gets():
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM Dessert")
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    return json_data
-@app.get("/asian")
-def gets():
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM Asian")
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    return json_data
-
-@app.get("/signup")#hedhi GET
-def gets():
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "Webclient")
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM signup")
-
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    return json_data
-
-@app.delete("/delete1")
-async def db_delete(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"DELETE from Dessert where nom_dish='{body['user']}'")
-    mydb.commit()
-    
-@app.delete("/delete2")
-async def db_delete(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"DELETE from Tunisian where nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
-@app.delete("/delete3")
-async def db_delete(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"DELETE from Italian where nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
-@app.delete("/delete4")
-async def db_delete(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"DELETE from French where nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
-@app.delete("/delete5")
-async def db_delete(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"DELETE from Asian where nom_dish='{body['user']}'")
-    mydb.commit()
-    print("Updated" + body)
-    return {"done"}
-
-@app.post("/update1")
-async def db_update1(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"UPDATE Dessert SET desc_dish='{body['pwd']}',price_dish='{body['p']}',adresse_dish='{body['a']}' WHERE nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
-
-@app.post("/update2")
-async def db_update(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"UPDATE Tunisian SET desc_dish='{body['pwd']}',price_dish='{body['p']}',adresse_dish='{body['a']}' WHERE nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
-
-@app.post("/update3")
-async def db_update(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"UPDATE Asian SET desc_dish='{body['pwd']}',price_dish='{body['p']}',adresse_dish='{body['a']}' WHERE nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
+def add_dish(payload: DishRequest):
+    table = dish_table(payload.name)
+    db = connect("testDB")
+    try:
+        cursor = db.cursor()
+        cursor.execute(
+            f"INSERT INTO {table} "
+            "(nom_dish, desc_dish, price_dish, img_dish, adresse_dish) "
+            "VALUES (%s, %s, %s, %s, %s)",
+            (
+                payload.name,
+                payload.description,
+                payload.price,
+                payload.image,
+                payload.address,
+            ),
+        )
+        db.commit()
+        return {"done": True}
+    finally:
+        cursor.close()
+        db.close()
 
 
-@app.post("/update4")
-async def db_update(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"UPDATE French SET desc_dish='{body['pwd']}',price_dish='{body['p']}',adresse_dish='{body['a']}' WHERE nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
-
-
-@app.post("/update5")
-async def db_update(request : Request):
-
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    body = json.loads(await request.body())
-    mycursor.execute(f"UPDATE Italian SET desc_dish='{body['pwd']}',price_dish='{body['p']}',adresse_dish='{body['a']}' WHERE nom_dish='{body['user']}'")
-    mydb.commit()
-    return {"done"}
+@app.get("/{category}")
+def list_dishes(category: str):
+    table = dish_table(category)
+    db = connect("testDB")
+    try:
+        cursor = db.cursor()
+        cursor.execute(f"SELECT * FROM {table}")
+        return rows_as_dicts(cursor)
+    finally:
+        cursor.close()
+        db.close()
 
 
-@app.get("/italian")
-def gets():
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM Italian")
+@app.delete("/{category}/{name}")
+def delete_dish(category: str, name: str):
+    table = dish_table(category)
+    db = connect("testDB")
+    try:
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM {table} WHERE nom_dish = %s", (name,))
+        db.commit()
+        return {"done": True}
+    finally:
+        cursor.close()
+        db.close()
 
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    return json_data
-@app.get("/french")
-def gets():
-    mydb = mysql.connector.connect(host = "localhost" , user = "root" , password = "" , database = "testDB")
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM French")
-    row_headers=[x[0] for x in mycursor.description] 
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    return json_data
+
+@app.put("/{category}/{name}")
+def update_dish(category: str, name: str, payload: DishUpdateRequest):
+    table = dish_table(category)
+    db = connect("testDB")
+    try:
+        cursor = db.cursor()
+        cursor.execute(
+            f"UPDATE {table} "
+            "SET desc_dish = %s, price_dish = %s, adresse_dish = %s "
+            "WHERE nom_dish = %s",
+            (payload.description, payload.price, payload.address, name),
+        )
+        db.commit()
+        return {"done": True}
+    finally:
+        cursor.close()
+        db.close()
+
+
+@app.get("/users")
+def list_users():
+    db = connect("Webclient")
+    try:
+        cursor = db.cursor()
+        cursor.execute("SELECT nom, email FROM signup")
+        return rows_as_dicts(cursor)
+    finally:
+        cursor.close()
+        db.close()
