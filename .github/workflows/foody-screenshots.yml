@@ -40,7 +40,7 @@ jobs:
         run: npx playwright install chromium
 
       - name: Serve built app
-        run: npx http-server@14 dist/Projet -p 4200 -c-1 > /tmp/foody-http.log 2>&1 &
+        run: npx serve@14 dist/Projet -l 4200 > /tmp/foody-http.log 2>&1 &
 
       - name: Wait for frontend
         run: |
