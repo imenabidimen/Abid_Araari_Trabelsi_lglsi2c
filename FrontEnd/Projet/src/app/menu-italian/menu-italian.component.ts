@@ -15,7 +15,7 @@ export class MenuItalianComponent implements OnInit {
   
   async ngOnInit(): Promise<void> {
    
-    const rep = await fetch(${environment.apiUrl}/italian");
+    const rep = await fetch(`${environment.apiUrl}/italian`);
     if (rep.ok){
     
       rep.json().then(data =>{//raj3etlna objet json data
