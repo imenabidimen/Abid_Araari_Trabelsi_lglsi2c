@@ -14,7 +14,7 @@ export class MenuTunisianComponent implements OnInit {
   constructor() { }
 
   async ngOnInit(): Promise<void> {
-    const rep = await fetch(${environment.apiUrl}/tunisian");
+    const rep = await fetch(`${environment.apiUrl}/tunisian`);
     if (rep.ok){
     
       rep.json().then(data =>{//raj3etlna objet json data
