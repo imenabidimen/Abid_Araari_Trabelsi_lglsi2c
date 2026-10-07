@@ -34,6 +34,24 @@ Foody/
 └── spec/                # original project specification
 ```
 
+## Screenshots
+
+These screenshots are captured from the Angular application after a real production build in GitHub Actions. They cover the main landing page and the two entry points for user authentication.
+
+### Home
+
+![Foody home](docs/screenshots/01-home.png)
+
+### Sign up
+
+![Foody sign up](docs/screenshots/02-sign-up.png)
+
+### Login
+
+![Foody login](docs/screenshots/03-login.png)
+
+The screenshot workflow builds the Angular application and serves the generated files before capturing the browser pages, so these are runtime captures rather than mock images.
+
 ## Run locally
 
 ### Backend
