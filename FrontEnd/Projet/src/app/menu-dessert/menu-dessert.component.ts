@@ -14,7 +14,7 @@ export class MenuDessertComponent implements OnInit {
   constructor() { }
 
   async ngOnInit(): Promise<void> {
-    const rep = await fetch(${environment.apiUrl}/dessert");
+    const rep = await fetch(`${environment.apiUrl}/dessert`);
     if (rep.ok){
     
       rep.json().then(data =>{//raj3etlna objet json data
