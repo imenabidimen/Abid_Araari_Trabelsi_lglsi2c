@@ -22,7 +22,7 @@ export class AdminComponent implements OnInit {
   sign: any;
   async ngOnInit(): Promise<void> {
 
-    const rep = await fetch(${environment.apiUrl}/dessert");
+    const rep = await fetch(`${environment.apiUrl}/dessert`);
     if (rep.ok) {
       rep.json().then(data => {//raj3etlna objet json data
         this.desserts = data;
@@ -30,7 +30,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const reponse = await fetch(${environment.apiUrl}/tunisian");
+    const reponse = await fetch(`${environment.apiUrl}/tunisian`);
     if (reponse.ok) {
       reponse.json().then(data => {//raj3etlna objet json data
         this.tunisians = data;
@@ -38,7 +38,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const repo = await fetch(${environment.apiUrl}/italian");
+    const repo = await fetch(`${environment.apiUrl}/italian`);
     if (repo.ok) {
       repo.json().then(data => {//raj3etlna objet json data
         this.italians = data;
@@ -46,7 +46,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const repon = await fetch(${environment.apiUrl}/asian");
+    const repon = await fetch(`${environment.apiUrl}/asian`);
     if (repon.ok) {
       repon.json().then(data => {//raj3etlna objet json data
         this.asians = data;
@@ -54,7 +54,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const repons = await fetch(${environment.apiUrl}/french");
+    const repons = await fetch(`${environment.apiUrl}/french`);
     if (repons.ok) {
       repons.json().then(data => {//raj3etlna objet json data
         this.frenchs = data;
