@@ -9,7 +9,6 @@ export class LoginComponent implements OnInit {
     const user=(document.getElementById('nom') as HTMLInputElement).value.trim();
     const pwd=(document.getElementById('pwd1') as HTMLInputElement).value;
     if(!user || !pwd){ alert('Please enter your username and password.'); return; }
-    if(user==='admin' && pwd==='admin'){ window.location.href='/admin'; return; }
     try {
       const response=await fetch(environment.apiUrl+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user,pwd})});
       if(!response.ok){ const error=await response.json().catch(()=>({})); alert(error.detail||'Invalid username or password.'); return; }
