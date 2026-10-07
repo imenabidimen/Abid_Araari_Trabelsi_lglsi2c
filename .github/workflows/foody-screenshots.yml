@@ -53,7 +53,7 @@ jobs:
             const browser = await chromium.launch({ headless: true });
             const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
-            await page.goto('http://127.0.0.1:4200/', { waitUntil: 'networkidle' });
+            await page.goto('http://127.0.0.1:4200/', { waitUntil: 'domcontentloaded' });
             await page.waitForTimeout(1000);
 
             const brokenImages = await page.locator('.carousel-inner img').evaluateAll((images) =>
@@ -67,10 +67,10 @@ jobs:
 
             await page.screenshot({ path: '../../docs/screenshots/01-home.png', fullPage: true });
 
-            await page.goto('http://127.0.0.1:4200/signup', { waitUntil: 'networkidle' });
+            await page.goto('http://127.0.0.1:4200/signup', { waitUntil: 'domcontentloaded' });
             await page.screenshot({ path: '../../docs/screenshots/02-sign-up.png', fullPage: true });
 
-            await page.goto('http://127.0.0.1:4200/login', { waitUntil: 'networkidle' });
+            await page.goto('http://127.0.0.1:4200/login', { waitUntil: 'domcontentloaded' });
             await page.screenshot({ path: '../../docs/screenshots/03-login.png', fullPage: true });
 
             await browser.close();
