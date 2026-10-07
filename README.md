@@ -27,7 +27,7 @@ This is an older project, so I keep it here mainly to show an earlier full-stack
 Foody/
 ├── FrontEnd/Projet/     # Angular application
 ├── Backend/MyDB/        # FastAPI application
-├── Backend/sql/         # database schema
+├── Backend/sql/         # database schemas
 ├── DataBase/            # database model
 ├── UI/                  # original wireframes
 ├── UX/                  # original design source
@@ -50,7 +50,7 @@ These screenshots are captured from the Angular application after a real product
 
 ![Foody login](docs/screenshots/03-login.png)
 
-The screenshot workflow builds the Angular application and serves the generated files before capturing the browser pages, so these are runtime captures rather than mock images.
+The screenshot workflow builds the Angular application, validates the backend Python code, serves the generated files in SPA mode, and checks the carousel images and authentication routes before capturing the browser pages. These are runtime captures rather than mock images.
 
 ## Run locally
 
@@ -65,6 +65,8 @@ python -m venv .venv
 # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+Import `Backend/sql/Webclient.sql` into the `Webclient` database and `Backend/sql/testDB.sql` into MySQL before starting the API.
 
 Configure the database connection with environment variables:
 
@@ -96,7 +98,7 @@ The Angular application runs on `http://localhost:4200`.
 
 ## Notes
 
-The original project used direct SQL statements and local database credentials. The backend has since been cleaned up to use typed request models, environment-based database configuration, parameterized SQL for user data, and a whitelist for category table names.
+The original project used direct SQL statements and local database credentials. The backend has since been cleaned up to use typed request models, environment-based database configuration, parameterized SQL for user data, hashed passwords, duplicate-account handling, and a whitelist for category table names.
 
 The repository intentionally keeps the original UI/design and specification material because this was a university group project.
 
