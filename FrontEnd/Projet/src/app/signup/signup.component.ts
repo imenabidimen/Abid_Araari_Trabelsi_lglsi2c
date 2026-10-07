@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 declare function signo():any ;
 @Component({
@@ -23,7 +24,7 @@ export class SignupComponent implements OnInit {
     
  
    
-    const response = await fetch("http://127.0.0.1:8000/forum", {
+    const response = await fetch("${environment.apiUrl}/forum", {
       method: 'POST',
       body:`{"nom":"${nom}","email":"${email}","pwd1":"${pwd1}"}`});
     
@@ -34,7 +35,6 @@ export class SignupComponent implements OnInit {
               let datas=  JSON.parse(JSON.stringify(data));
               localStorage.setItem("nom" , datas["0"].nom);
               localStorage.setItem("email" , datas["0"].email);
-              localStorage.setItem("pwd1" , datas["0"].pwd1);
               window.location.reload();
               alert("done")
               
