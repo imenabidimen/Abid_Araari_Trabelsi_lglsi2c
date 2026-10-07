@@ -2,7 +2,7 @@ import os
 from typing import Any
 
 import mysql.connector
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -170,28 +170,67 @@ def delete_dish(category: str, name: str):
 
 
 @app.delete("/delete1")
-def delete_dessert_legacy(name: str = ""):
-    return delete_dish("dessert", name)
+async def delete_dessert_legacy(request: Request):
+    body = await request.json()
+    return delete_dish("dessert", body.get("user", ""))
 
 
 @app.delete("/delete2")
-def delete_tunisian_legacy(name: str = ""):
-    return delete_dish("tunisian", name)
+async def delete_tunisian_legacy(request: Request):
+    body = await request.json()
+    return delete_dish("tunisian", body.get("user", ""))
 
 
 @app.delete("/delete3")
-def delete_italian_legacy(name: str = ""):
-    return delete_dish("italian", name)
+async def delete_italian_legacy(request: Request):
+    body = await request.json()
+    return delete_dish("italian", body.get("user", ""))
 
 
 @app.delete("/delete4")
-def delete_french_legacy(name: str = ""):
-    return delete_dish("french", name)
+async def delete_french_legacy(request: Request):
+    body = await request.json()
+    return delete_dish("french", body.get("user", ""))
 
 
 @app.delete("/delete5")
-def delete_asian_legacy(name: str = ""):
-    return delete_dish("asian", name)
+async def delete_asian_legacy(request: Request):
+    body = await request.json()
+    return delete_dish("asian", body.get("user", ""))
+
+
+def update_legacy(category: str, body: dict):
+    payload = DishUpdateRequest(
+        pwd=body.get("pwd", ""),
+        p=body.get("p", ""),
+        a=body.get("a", ""),
+    )
+    return update_dish(category, body.get("user", ""), payload)
+
+
+@app.post("/update1")
+async def update_dessert_legacy(request: Request):
+    return update_legacy("dessert", await request.json())
+
+
+@app.post("/update2")
+async def update_tunisian_legacy(request: Request):
+    return update_legacy("tunisian", await request.json())
+
+
+@app.post("/update3")
+async def update_asian_legacy(request: Request):
+    return update_legacy("asian", await request.json())
+
+
+@app.post("/update4")
+async def update_french_legacy(request: Request):
+    return update_legacy("french", await request.json())
+
+
+@app.post("/update5")
+async def update_italian_legacy(request: Request):
+    return update_legacy("italian", await request.json())
 
 
 @app.put("/{category}/{name}")
