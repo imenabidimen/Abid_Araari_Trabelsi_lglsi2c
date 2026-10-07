@@ -1,5 +1,5 @@
 """Foody API."""
-import hashlib, hmac, os, secrets
+import base64, hashlib, hmac, os, secrets
 from contextlib import closing
 from typing import Dict, List
 import mysql.connector
@@ -40,17 +40,22 @@ def get_connection(database: str):
         user=os.getenv("DB_USER","foody"), password=os.getenv("DB_PASSWORD",""), database=database)
 
 def password_hash(password: str) -> str:
-    salt = secrets.token_hex(16)
-    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), PASSWORD_ITERATIONS).hex()
-    return "pbkdf2_sha256$" + str(PASSWORD_ITERATIONS) + "$" + salt + "$" + digest
+    salt = secrets.token_bytes(12)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, PASSWORD_ITERATIONS)
+    encoded_salt = base64.urlsafe_b64encode(salt).decode().rstrip("=")
+    encoded_digest = base64.urlsafe_b64encode(digest).decode().rstrip("=")
+    return "pbkdf2_sha256$" + str(PASSWORD_ITERATIONS) + "$" + encoded_salt + "$" + encoded_digest
 
 def verify_password(password: str, stored: str) -> bool:
     if not stored.startswith("pbkdf2_sha256$"):
         return hmac.compare_digest(password, stored)
     try:
         _, iterations, salt, expected = stored.split("$", 3)
-        digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), int(iterations)).hex()
-        return hmac.compare_digest(digest, expected)
+        padding = "=" * (-len(salt) % 4)
+        salt_bytes = base64.urlsafe_b64decode(salt + padding)
+        digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt_bytes, int(iterations))
+        encoded_digest = base64.urlsafe_b64encode(digest).decode().rstrip("=")
+        return hmac.compare_digest(encoded_digest, expected)
     except (ValueError, TypeError):
         return False
 
