@@ -40,10 +40,11 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Serve built app
-        run: npx http-server dist/Projet -p 4200 -c-1 > /tmp/foody-http.log 2>&1 &
+        run: npx http-server@14 dist/Projet -p 4200 -c-1 > /tmp/foody-http.log 2>&1 &
 
       - name: Capture browser screenshots
         run: |
+          mkdir -p ../../docs/screenshots
           node <<'NODE'
           const { chromium } = require('playwright');
           const fs = require('fs');
