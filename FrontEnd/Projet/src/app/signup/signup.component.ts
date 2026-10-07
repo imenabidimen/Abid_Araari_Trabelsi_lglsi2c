@@ -24,7 +24,7 @@ export class SignupComponent implements OnInit {
     
  
    
-    const response = await fetch(${environment.apiUrl}/forum", {
+    const response = await fetch(`${environment.apiUrl}/forum`, {
       method: 'POST',
       body:`{"nom":"${nom}","email":"${email}","pwd1":"${pwd1}"}`});
     
