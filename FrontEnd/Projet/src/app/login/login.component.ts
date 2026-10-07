@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
       window.open("/admin");
       
     }else{
-    const response = await fetch("${environment.apiUrl}/login", {
+    const response = await fetch(${environment.apiUrl}/login", {
       method: 'POST',
       body:`{"user":"${user}","pwd":"${pwd}"}`});
       if(response.ok){
