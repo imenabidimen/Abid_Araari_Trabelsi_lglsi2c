@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 
 
@@ -22,7 +23,7 @@ export class LoginComponent implements OnInit {
       window.open("/admin");
       
     }else{
-    const response = await fetch("http://127.0.0.1:8000/login", {
+    const response = await fetch("${environment.apiUrl}/login", {
       method: 'POST',
       body:`{"user":"${user}","pwd":"${pwd}"}`});
       if(response.ok){
@@ -31,8 +32,7 @@ export class LoginComponent implements OnInit {
               let datas=  JSON.parse(JSON.stringify(data));
               localStorage.setItem("nom" , datas["0"].nom);
               localStorage.setItem("prenom" , datas["0"].prenom);
-              window.location.href='/menu1';
-              window.open("/menu1");
+              window.location.href = '/menu1';
               alert(" welocome to foody world ")
               
             }
