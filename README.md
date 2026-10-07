@@ -1,18 +1,20 @@
-# Abid_Araari_Trabelsi_lglsi2c
+# Foody
 
-*** Gestion des plats ***
-** LGLSI 2C **
+A university group project for managing a restaurant menu and customer orders.
 
-* imen abid *
+## Features
 
-* eya araari *
+- Browse dishes by category
+- Add, update and delete dishes
+- Customer and admin areas
+- Restaurant menu pages
+- Contact and information pages
 
-* rayen trablsi *
+## Technologies
 
-supprimer des plats 
+- Angular
+- Python
+- MySQL
+- HTML / CSS / JavaScript
 
-modifier des plats 
-
-ajouter des plats 
-
-consulter des plats
+The repository also contains the original project specification and design files used during development.
