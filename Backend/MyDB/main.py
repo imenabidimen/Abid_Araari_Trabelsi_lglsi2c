@@ -4,7 +4,7 @@ from typing import Any
 import mysql.connector
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 app = FastAPI(title="Foody API", version="1.0.0")
@@ -33,29 +33,29 @@ DISH_TABLES = {
 
 
 class SignupRequest(BaseModel):
-    name: str
+    name: str = Field(alias="nom")
     email: str
-    password: str
+    password: str = Field(alias="pwd1")
 
 
 class LoginRequest(BaseModel):
     user: str
-    password: str
+    password: str = Field(alias="pwd")
 
 
 class DishRequest(BaseModel):
-    name: str
-    description: str
+    name: str = Field(alias="nom")
+    category: str = Field(alias="type")
+    description: str = Field(alias="desc")
     price: str
-    image: str
-    address: str
+    image: str = Field(alias="img")
+    address: str = Field(alias="ad")
 
 
 class DishUpdateRequest(BaseModel):
-    name: str
-    description: str
-    price: str
-    address: str
+    description: str = Field(alias="pwd")
+    price: str = Field(alias="p")
+    address: str = Field(alias="a")
 
 
 def connect(database: str):
@@ -88,8 +88,8 @@ def health():
 @app.post("/forum")
 def signup(payload: SignupRequest):
     db = connect("Webclient")
+    cursor = db.cursor()
     try:
-        cursor = db.cursor()
         cursor.execute(
             "INSERT INTO signup(nom, email, password) VALUES (%s, %s, %s)",
             (payload.name, payload.email, payload.password),
@@ -104,8 +104,8 @@ def signup(payload: SignupRequest):
 @app.post("/login")
 def login(payload: LoginRequest):
     db = connect("Webclient")
+    cursor = db.cursor()
     try:
-        cursor = db.cursor()
         cursor.execute(
             "SELECT nom, password FROM signup WHERE nom = %s AND password = %s",
             (payload.user, payload.password),
@@ -118,10 +118,10 @@ def login(payload: LoginRequest):
 
 @app.post("/add")
 def add_dish(payload: DishRequest):
-    table = dish_table(payload.name)
+    table = dish_table(payload.category)
     db = connect("testDB")
+    cursor = db.cursor()
     try:
-        cursor = db.cursor()
         cursor.execute(
             f"INSERT INTO {table} "
             "(nom_dish, desc_dish, price_dish, img_dish, adresse_dish) "
@@ -145,8 +145,8 @@ def add_dish(payload: DishRequest):
 def list_dishes(category: str):
     table = dish_table(category)
     db = connect("testDB")
+    cursor = db.cursor()
     try:
-        cursor = db.cursor()
         cursor.execute(f"SELECT * FROM {table}")
         return rows_as_dicts(cursor)
     finally:
@@ -158,8 +158,8 @@ def list_dishes(category: str):
 def delete_dish(category: str, name: str):
     table = dish_table(category)
     db = connect("testDB")
+    cursor = db.cursor()
     try:
-        cursor = db.cursor()
         cursor.execute(f"DELETE FROM {table} WHERE nom_dish = %s", (name,))
         db.commit()
         return {"done": True}
@@ -172,8 +172,8 @@ def delete_dish(category: str, name: str):
 def update_dish(category: str, name: str, payload: DishUpdateRequest):
     table = dish_table(category)
     db = connect("testDB")
+    cursor = db.cursor()
     try:
-        cursor = db.cursor()
         cursor.execute(
             f"UPDATE {table} "
             "SET desc_dish = %s, price_dish = %s, adresse_dish = %s "
@@ -182,18 +182,6 @@ def update_dish(category: str, name: str, payload: DishUpdateRequest):
         )
         db.commit()
         return {"done": True}
-    finally:
-        cursor.close()
-        db.close()
-
-
-@app.get("/users")
-def list_users():
-    db = connect("Webclient")
-    try:
-        cursor = db.cursor()
-        cursor.execute("SELECT nom, email FROM signup")
-        return rows_as_dicts(cursor)
     finally:
         cursor.close()
         db.close()
