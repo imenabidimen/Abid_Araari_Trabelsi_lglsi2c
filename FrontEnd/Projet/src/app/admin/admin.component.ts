@@ -105,24 +105,17 @@ export class AdminComponent implements OnInit {
     var ad = (<HTMLInputElement>document.getElementById("ad")).value;
     const response = await fetch("http://127.0.0.1:8000/add", {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"nom":"${nom}" , "type":"${type}" ,"ad":"${ad}", "price":"${price}" , "desc":"${desc}" , "img":"${this.url}" }`
     });
 
     if (response.ok) {
       response.json().then(function (data) {
-        if (JSON.stringify(data) != "[]") {
-          let datas = JSON.parse(JSON.stringify(data));
-          localStorage.setItem("nom", datas["0"].nom);
-          localStorage.setItem("price", datas["0"].price);
-          localStorage.setItem("type", datas["0"].type);
-          localStorage.setItem("desc", datas["0"].desc);
-          localStorage.setItem("ad", datas["0"].ad);
+        if (data && data.ok) {
           window.location.reload();
-          alert("done")
-
-        }
-        else {
-          alert("  error detected ")
+          alert("done");
+        } else {
+          alert("Error detected");
         }
 
       });
@@ -147,6 +140,7 @@ export class AdminComponent implements OnInit {
   async delete1(name: string) {  
     const response = await fetch("http://127.0.0.1:8000/delete1", {
       method: 'delete',
+      headers: { 'Content-Type': 'application/json' },
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
