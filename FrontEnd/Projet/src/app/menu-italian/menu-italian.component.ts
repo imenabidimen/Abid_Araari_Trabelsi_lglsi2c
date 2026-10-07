@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 import 'src/assets/js/m.js';
 declare var im:any ;
@@ -14,7 +15,7 @@ export class MenuItalianComponent implements OnInit {
   
   async ngOnInit(): Promise<void> {
    
-    const rep = await fetch("http://127.0.0.1:8000/italian");
+    const rep = await fetch("${environment.apiUrl}/italian");
     if (rep.ok){
     
       rep.json().then(data =>{//raj3etlna objet json data
