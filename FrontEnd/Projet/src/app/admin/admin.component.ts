@@ -22,7 +22,7 @@ export class AdminComponent implements OnInit {
   sign: any;
   async ngOnInit(): Promise<void> {
 
-    const rep = await fetch("${environment.apiUrl}/dessert");
+    const rep = await fetch(${environment.apiUrl}/dessert");
     if (rep.ok) {
       rep.json().then(data => {//raj3etlna objet json data
         this.desserts = data;
@@ -30,7 +30,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const reponse = await fetch("${environment.apiUrl}/tunisian");
+    const reponse = await fetch(${environment.apiUrl}/tunisian");
     if (reponse.ok) {
       reponse.json().then(data => {//raj3etlna objet json data
         this.tunisians = data;
@@ -38,7 +38,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const repo = await fetch("${environment.apiUrl}/italian");
+    const repo = await fetch(${environment.apiUrl}/italian");
     if (repo.ok) {
       repo.json().then(data => {//raj3etlna objet json data
         this.italians = data;
@@ -46,7 +46,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const repon = await fetch("${environment.apiUrl}/asian");
+    const repon = await fetch(${environment.apiUrl}/asian");
     if (repon.ok) {
       repon.json().then(data => {//raj3etlna objet json data
         this.asians = data;
@@ -54,7 +54,7 @@ export class AdminComponent implements OnInit {
       });
     }
 
-    const repons = await fetch("${environment.apiUrl}/french");
+    const repons = await fetch(${environment.apiUrl}/french");
     if (repons.ok) {
       repons.json().then(data => {//raj3etlna objet json data
         this.frenchs = data;
@@ -68,7 +68,7 @@ export class AdminComponent implements OnInit {
 
     var user = (<HTMLInputElement>document.getElementById("user")).value;
     var pwd = (<HTMLInputElement>document.getElementById("pwd")).value;
-    const response = await fetch("${environment.apiUrl}/user", {
+    const response = await fetch(${environment.apiUrl}/user", {
       method: 'POST',
       body: `{"user":"${user}","pwd":"${pwd}"}`
     });
@@ -104,7 +104,7 @@ export class AdminComponent implements OnInit {
     var type = (<HTMLInputElement>document.getElementById("type")).value;
     var desc = (<HTMLInputElement>document.getElementById("desc")).value;
     var ad = (<HTMLInputElement>document.getElementById("ad")).value;
-    const response = await fetch("${environment.apiUrl}/add", {
+    const response = await fetch(${environment.apiUrl}/add", {
       method: 'POST',
       body: `{"nom":"${nom}" , "type":"${type}" ,"ad":"${ad}", "price":"${price}" , "desc":"${desc}" , "img":"${this.url}" }`
     });
@@ -146,7 +146,7 @@ export class AdminComponent implements OnInit {
   }
 
   async delete1(name: string) {  
-    const response = await fetch("${environment.apiUrl}/delete1", {
+    const response = await fetch(${environment.apiUrl}/delete1", {
       method: 'delete',
       body: `{"user":"${name}"}`
     });
@@ -161,7 +161,7 @@ export class AdminComponent implements OnInit {
   async delete2(name: string) {
     // var user = (<HTMLInputElement>document.getElementById("nom2")).innerHTML;
 
-    const response = await fetch("${environment.apiUrl}/delete2", {
+    const response = await fetch(${environment.apiUrl}/delete2", {
       method: 'delete',
       body: `{"user":"${name}"}`
     });
@@ -176,7 +176,7 @@ export class AdminComponent implements OnInit {
   async delete3(name: string) {
   
 
-    const response = await fetch("${environment.apiUrl}/delete3", {
+    const response = await fetch(${environment.apiUrl}/delete3", {
       method: 'delete',
       body: `{"user":"${name}"}`
     });
@@ -191,7 +191,7 @@ export class AdminComponent implements OnInit {
   async delete4(name: string) {
     
 
-    const response = await fetch("${environment.apiUrl}/delete4", {
+    const response = await fetch(${environment.apiUrl}/delete4", {
       method: 'delete',
       body: `{"user":"${name}"}`
     });
@@ -206,7 +206,7 @@ export class AdminComponent implements OnInit {
   async delete5(name: string) {
     // var user = (<HTMLInputElement>document.getElementById("asian.nom_dish")).innerHTML;
 
-    const response = await fetch("${environment.apiUrl}/delete5", {
+    const response = await fetch(${environment.apiUrl}/delete5", {
       method: 'delete',
       body: `{"user":"${name}"}`
     });
@@ -223,7 +223,7 @@ export class AdminComponent implements OnInit {
    
     var p = (<HTMLInputElement>document.getElementById("p1")).innerHTML;
     var a = (<HTMLInputElement>document.getElementById("ad1")).innerHTML;
-    const response = await fetch("${environment.apiUrl}/update1", {
+    const response = await fetch(${environment.apiUrl}/update1", {
       method: 'POST',
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
@@ -251,7 +251,7 @@ export class AdminComponent implements OnInit {
     var pwd = (<HTMLInputElement>document.getElementById("d2")).innerHTML;
     var p = (<HTMLInputElement>document.getElementById("p2")).innerHTML;
     var a = (<HTMLInputElement>document.getElementById("ad2")).innerHTML;
-    const response = await fetch("${environment.apiUrl}/update2", {
+    const response = await fetch(${environment.apiUrl}/update2", {
       method: 'POST',
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
@@ -286,7 +286,7 @@ export class AdminComponent implements OnInit {
     var pwd = (<HTMLInputElement>document.getElementById("d5")).innerHTML;
     var p = (<HTMLInputElement>document.getElementById("p5")).innerHTML;
     var a = (<HTMLInputElement>document.getElementById("ad5")).innerHTML;
-    const response = await fetch("${environment.apiUrl}/update3", {
+    const response = await fetch(${environment.apiUrl}/update3", {
       method: 'POST',
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
@@ -323,7 +323,7 @@ export class AdminComponent implements OnInit {
     var pwd = (<HTMLInputElement>document.getElementById("d4")).innerHTML;
     var p = (<HTMLInputElement>document.getElementById("p4")).innerHTML;
     var a = (<HTMLInputElement>document.getElementById("ad4")).innerHTML;
-    const response = await fetch("${environment.apiUrl}/update4", {
+    const response = await fetch(${environment.apiUrl}/update4", {
       method: 'POST',
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
@@ -359,7 +359,7 @@ export class AdminComponent implements OnInit {
     var pwd = (<HTMLInputElement>document.getElementById("d3")).innerHTML;
     var p = (<HTMLInputElement>document.getElementById("p3")).innerHTML;
     var a = (<HTMLInputElement>document.getElementById("ad3")).innerHTML;
-    const response = await fetch("${environment.apiUrl}/update5", {
+    const response = await fetch(${environment.apiUrl}/update5", {
       method: 'POST',
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
