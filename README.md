@@ -102,6 +102,10 @@ The original project used direct SQL statements and local database credentials. 
 
 The repository intentionally keeps the original UI/design and specification material because this was a university group project.
 
+## Known limitations
+
+This is a legacy university project, not a production-ready food-ordering service. The menu write endpoints do not yet enforce server-side admin roles, and the old frontend still contains a demo admin login. Do not deploy it with real customer data until authorization, account/session handling, and database permissions have been redesigned and tested. Legacy plaintext-password verification is retained only to support older records; existing accounts should be migrated before removing that fallback.
+
 ## Project context
 
-Foody was developed as a university group project. It is not intended to represent my current production stack; my current portfolio projects focus on NestJS, Vue.js, React and Azure.
+Foody was developed as a university group project. I keep the original UI and specification material to show the project's context. My newer portfolio work focuses on NestJS, Vue.js, React and Azure.
