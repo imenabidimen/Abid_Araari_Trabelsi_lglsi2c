@@ -81,6 +81,7 @@ DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=
 CORS_ORIGINS=http://localhost:4200
+FOODY_ADMIN_TOKEN=replace-with-a-long-random-secret
 ```
 
 Start the API:
@@ -109,7 +110,7 @@ The repository intentionally keeps the original UI/design and specification mate
 
 ## Known limitations
 
-This is a legacy university project, not a production-ready food-ordering service. The menu write endpoints do not yet enforce server-side admin roles, and the old frontend still contains a demo admin login. Do not deploy it with real customer data until authorization, account/session handling, and database permissions have been redesigned and tested. Legacy plaintext-password verification is retained only to support older records; existing accounts should be migrated before removing that fallback.
+This is a legacy university project, not a production-ready food-ordering service. Menu write endpoints require the `X-Admin-Token` header and return `503` when `FOODY_ADMIN_TOKEN` is not configured. The legacy admin screen prompts for that secret and keeps it in session storage; this is a compatibility measure for the old project, not a replacement for a proper user/role system. Use HTTPS outside local development, keep the token out of source control, and do not deploy this app with real customer data until account/session handling and database permissions have been redesigned and tested. Legacy plaintext-password verification is retained only to migrate older records; remove that fallback after existing accounts have been migrated.
 
 ## Project context
 
