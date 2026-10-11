@@ -99,7 +99,6 @@ def dish_table(category: str) -> str:
     return table
 
 
-@app.get("/health")
 def admin_token_is_valid(candidate: str | None) -> bool:
     configured = os.getenv("FOODY_ADMIN_TOKEN", "")
     return bool(configured and candidate and hmac.compare_digest(candidate, configured))
