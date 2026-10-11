@@ -2,12 +2,7 @@
 
 ![CI](https://github.com/imenabidimen/Abid_Araari_Trabelsi_lglsi2c/actions/workflows/foody-screenshots.yml/badge.svg)
 
-**Portfolio context:** an earlier university group project built with Angular, FastAPI and MySQL. It demonstrates an earlier stage of my development work; my newer projects use [NestJS](https://github.com/imenabidimen/taskforge-api), [Vue](https://github.com/imenabidimen/workboard-vue) and [React](https://github.com/imenabidimen/clienthub-react).
-
-
-Foody is a university group project for browsing restaurant dishes and managing menu data. It combines an Angular frontend with a small FastAPI/MySQL backend.
-
-This is an older project, so I keep it here mainly to show an earlier full-stack project and how my development experience started before my more recent Vue/NestJS work.
+Foody is an earlier university group project for browsing restaurant dishes and managing menu data. It combines an Angular frontend with a FastAPI/MySQL backend. I keep it in the portfolio to show an earlier stage of my full-stack work; my newer projects use [NestJS](https://github.com/imenabidimen/taskforge-api), [Vue](https://github.com/imenabidimen/workboard-vue) and [React](https://github.com/imenabidimen/clienthub-react).
 
 ## What it does
 
@@ -112,6 +107,6 @@ The repository intentionally keeps the original UI/design and specification mate
 
 This is a legacy university project, not a production-ready food-ordering service. Menu write endpoints require the `X-Admin-Token` header and return `503` when `FOODY_ADMIN_TOKEN` is not configured. The legacy admin screen prompts for that secret and keeps it in session storage; this is a compatibility measure for the old project, not a replacement for a proper user/role system. Use HTTPS outside local development, keep the token out of source control, and do not deploy this app with real customer data until account/session handling and database permissions have been redesigned and tested. Legacy plaintext-password verification is retained only to migrate older records; remove that fallback after existing accounts have been migrated.
 
-## Project context
+## Project ownership
 
-Foody was developed as a university group project. I keep the original UI and specification material to show the project's context. My newer portfolio work focuses on NestJS, Vue.js, React and Azure.
+This was a group project. In an interview, I would distinguish the parts I personally implemented from the shared UI, database model and original specification. The repository keeps the original project materials for context.
