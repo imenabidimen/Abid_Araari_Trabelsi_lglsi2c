@@ -1,7 +1,9 @@
+import os
 import unittest
+from unittest.mock import patch
 from fastapi import HTTPException
 
-from MyDB.main import dish_table, hash_password, verify_password
+from MyDB.main import admin_token_is_valid, dish_table, hash_password, verify_password
 
 
 class PasswordTests(unittest.TestCase):
@@ -16,6 +18,17 @@ class PasswordTests(unittest.TestCase):
     def test_legacy_plaintext_password_can_be_verified_for_migration(self):
         self.assertTrue(verify_password("legacy-password", "legacy-password"))
         self.assertFalse(verify_password("wrong-password", "legacy-password"))
+
+
+class AdminTokenTests(unittest.TestCase):
+    def test_admin_token_requires_a_configured_secret_and_exact_match(self):
+        with patch.dict(os.environ, {"FOODY_ADMIN_TOKEN": "test-secret"}):
+            self.assertTrue(admin_token_is_valid("test-secret"))
+            self.assertFalse(admin_token_is_valid("wrong-secret"))
+            self.assertFalse(admin_token_is_valid(None))
+
+        with patch.dict(os.environ, {"FOODY_ADMIN_TOKEN": ""}):
+            self.assertFalse(admin_token_is_valid("test-secret"))
 
 
 class DishTableTests(unittest.TestCase):
