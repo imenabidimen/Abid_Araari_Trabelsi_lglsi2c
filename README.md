@@ -1,5 +1,10 @@
 # Foody
 
+![CI](https://github.com/imenabidimen/Abid_Araari_Trabelsi_lglsi2c/actions/workflows/foody-screenshots.yml/badge.svg)
+
+**Portfolio context:** an earlier university group project built with Angular, FastAPI and MySQL. It demonstrates an earlier stage of my development work; my newer projects use [NestJS](https://github.com/imenabidimen/taskforge-api), [Vue](https://github.com/imenabidimen/workboard-vue) and [React](https://github.com/imenabidimen/clienthub-react).
+
+
 Foody is a university group project for browsing restaurant dishes and managing menu data. It combines an Angular frontend with a small FastAPI/MySQL backend.
 
 This is an older project, so I keep it here mainly to show an earlier full-stack project and how my development experience started before my more recent Vue/NestJS work.
