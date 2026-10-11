@@ -1,4 +1,4 @@
-name: Foody screenshots
+name: Foody checks and screenshots
 
 on:
   workflow_dispatch:
@@ -7,31 +7,34 @@ on:
       - "docs/screenshots/**"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  screenshots:
+  checks:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: FrontEnd/Projet
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check backend
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install backend dependencies
         working-directory: Backend
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Compile backend
         working-directory: Backend
-        run: python -m compileall MyDB
+        run: python -m compileall -q MyDB
+
+      - name: Test backend helpers
+        working-directory: Backend
+        run: python -m unittest discover -s tests -v
 
       - name: Use Node.js 14
         uses: actions/setup-node@v4
@@ -41,21 +44,27 @@ jobs:
           cache-dependency-path: FrontEnd/Projet/package-lock.json
 
       - name: Install frontend dependencies
+        working-directory: FrontEnd/Projet
         run: npm ci
 
       - name: Build Angular app
+        working-directory: FrontEnd/Projet
         run: npm run build
 
       - name: Install Playwright
+        working-directory: FrontEnd/Projet
         run: npm install --no-save playwright@1.30.0
 
       - name: Install Chromium
+        working-directory: FrontEnd/Projet
         run: npx playwright install chromium
 
       - name: Serve built app
+        working-directory: FrontEnd/Projet
         run: npx serve@14 dist/Projet -s -l 4200 > /tmp/foody-http.log 2>&1 &
 
       - name: Wait for frontend
+        working-directory: FrontEnd/Projet
         run: |
           for i in {1..30}; do
             if curl -fsS http://127.0.0.1:4200/ > /dev/null; then
@@ -67,27 +76,22 @@ jobs:
           exit 1
 
       - name: Capture browser screenshots
+        working-directory: FrontEnd/Projet
         run: |
           mkdir -p ../../docs/screenshots
           node <<'NODE'
           const { chromium } = require('playwright');
-          const fs = require('fs');
 
           (async () => {
             const browser = await chromium.launch({ headless: true });
             const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
-            await page.goto('http://127.0.0.1:4200/', { waitUntil: 'domcontentloaded', timeout: 10000 });
-            await page.waitForTimeout(1000);
-
-            const brokenImages = await page.locator('.carousel-inner img').evaluateAll((images) =>
-              images.filter((image) => !image.complete || image.naturalWidth === 0)
-                .map((image) => image.getAttribute('src'))
-            );
-
-            if (brokenImages.length > 0) {
-              throw new Error('Broken home carousel images: ' + brokenImages.join(', '));
-            }
+            await page.goto('http://127.0.0.1:4200/', { waitUntil: 'domcontentloaded', timeout: 20000 });
+            await page.locator('.carousel-inner img').first().waitFor({ state: 'attached' });
+            await page.waitForFunction(() =>
+              Array.from(document.querySelectorAll('.carousel-inner img'))
+                .every((image) => image.complete && image.naturalWidth > 0)
+            , null, { timeout: 15000 });
 
             await page.screenshot({ path: '../../docs/screenshots/01-home.png', fullPage: true });
 
@@ -100,22 +104,15 @@ jobs:
             await page.screenshot({ path: '../../docs/screenshots/03-login.png', fullPage: true });
 
             await browser.close();
-            process.exit(0);
           })().catch((error) => {
             console.error(error);
             process.exit(1);
           });
           NODE
 
-      - name: Commit screenshots
-        working-directory: .
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/screenshots
-          if git diff --cached --quiet; then
-            echo "No screenshot changes."
-            exit 0
-          fi
-          git commit -m "docs: refresh Foody screenshots [skip ci]"
-          git push
+      - name: Upload browser screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: foody-browser-screenshots
+          path: docs/screenshots/*.png
+          if-no-files-found: error
