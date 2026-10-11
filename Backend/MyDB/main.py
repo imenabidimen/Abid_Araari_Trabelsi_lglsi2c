@@ -1,9 +1,10 @@
+import hmac
 import os
 from typing import Any
 
 import bcrypt
 import mysql.connector
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -99,6 +100,28 @@ def dish_table(category: str) -> str:
 
 
 @app.get("/health")
+def admin_token_is_valid(candidate: str | None) -> bool:
+    configured = os.getenv("FOODY_ADMIN_TOKEN", "")
+    return bool(configured and candidate and hmac.compare_digest(candidate, configured))
+
+
+def require_admin(request: Request) -> None:
+    if not os.getenv("FOODY_ADMIN_TOKEN"):
+        raise HTTPException(
+            status_code=503,
+            detail="Menu administration is disabled until FOODY_ADMIN_TOKEN is configured",
+        )
+    if not admin_token_is_valid(request.headers.get("X-Admin-Token")):
+        raise HTTPException(status_code=403, detail="Admin token required")
+
+
+@app.post("/admin/verify")
+def verify_admin(request: Request):
+    require_admin(request)
+    return {"authenticated": True}
+
+
+@app.get("/health")
 def health():
     return {"status": "ok"}
 
@@ -153,7 +176,7 @@ def login(payload: LoginRequest):
         db.close()
 
 
-@app.post("/add")
+@app.post("/add", dependencies=[Depends(require_admin)])
 def add_dish(payload: DishRequest):
     table = dish_table(payload.category)
     db = connect("testDB")
@@ -191,7 +214,7 @@ def list_dishes(category: str):
         db.close()
 
 
-@app.delete("/{category}/{name}")
+@app.delete("/{category}/{name}", dependencies=[Depends(require_admin)])
 def delete_dish(category: str, name: str):
     table = dish_table(category)
     db = connect("testDB")
@@ -206,31 +229,31 @@ def delete_dish(category: str, name: str):
 
 
 
-@app.delete("/delete1")
+@app.delete("/delete1", dependencies=[Depends(require_admin)])
 async def delete_dessert_legacy(request: Request):
     body = await request.json()
     return delete_dish("dessert", body.get("user", ""))
 
 
-@app.delete("/delete2")
+@app.delete("/delete2", dependencies=[Depends(require_admin)])
 async def delete_tunisian_legacy(request: Request):
     body = await request.json()
     return delete_dish("tunisian", body.get("user", ""))
 
 
-@app.delete("/delete3")
+@app.delete("/delete3", dependencies=[Depends(require_admin)])
 async def delete_italian_legacy(request: Request):
     body = await request.json()
     return delete_dish("italian", body.get("user", ""))
 
 
-@app.delete("/delete4")
+@app.delete("/delete4", dependencies=[Depends(require_admin)])
 async def delete_french_legacy(request: Request):
     body = await request.json()
     return delete_dish("french", body.get("user", ""))
 
 
-@app.delete("/delete5")
+@app.delete("/delete5", dependencies=[Depends(require_admin)])
 async def delete_asian_legacy(request: Request):
     body = await request.json()
     return delete_dish("asian", body.get("user", ""))
@@ -245,32 +268,32 @@ def update_legacy(category: str, body: dict):
     return update_dish(category, body.get("user", ""), payload)
 
 
-@app.post("/update1")
+@app.post("/update1", dependencies=[Depends(require_admin)])
 async def update_dessert_legacy(request: Request):
     return update_legacy("dessert", await request.json())
 
 
-@app.post("/update2")
+@app.post("/update2", dependencies=[Depends(require_admin)])
 async def update_tunisian_legacy(request: Request):
     return update_legacy("tunisian", await request.json())
 
 
-@app.post("/update3")
+@app.post("/update3", dependencies=[Depends(require_admin)])
 async def update_asian_legacy(request: Request):
     return update_legacy("asian", await request.json())
 
 
-@app.post("/update4")
+@app.post("/update4", dependencies=[Depends(require_admin)])
 async def update_french_legacy(request: Request):
     return update_legacy("french", await request.json())
 
 
-@app.post("/update5")
+@app.post("/update5", dependencies=[Depends(require_admin)])
 async def update_italian_legacy(request: Request):
     return update_legacy("italian", await request.json())
 
 
-@app.put("/{category}/{name}")
+@app.put("/{category}/{name}", dependencies=[Depends(require_admin)])
 def update_dish(category: str, name: str, payload: DishUpdateRequest):
     table = dish_table(category)
     db = connect("testDB")
