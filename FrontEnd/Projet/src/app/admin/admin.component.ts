@@ -17,6 +17,13 @@ export class AdminComponent implements OnInit {
 
 
   constructor() { }
+
+  private adminHeaders(): HeadersInit {
+    return {
+      'Content-Type': 'application/json',
+      'X-Admin-Token': sessionStorage.getItem('foodyAdminToken') || ''
+    };
+  }
   title = 'wo';
   url: any;
   sign: any;
@@ -70,6 +77,7 @@ export class AdminComponent implements OnInit {
     var pwd = (<HTMLInputElement>document.getElementById("pwd")).value;
     const response = await fetch(`${environment.apiUrl}/user`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"user":"${user}","pwd":"${pwd}"}`
     });
     if (response.ok) {
@@ -106,6 +114,7 @@ export class AdminComponent implements OnInit {
     var ad = (<HTMLInputElement>document.getElementById("ad")).value;
     const response = await fetch(`${environment.apiUrl}/add`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"nom":"${nom}" , "type":"${type}" ,"ad":"${ad}", "price":"${price}" , "desc":"${desc}" , "img":"${this.url}" }`
     });
 
@@ -148,6 +157,7 @@ export class AdminComponent implements OnInit {
   async delete1(name: string) {  
     const response = await fetch(`${environment.apiUrl}/delete1`, {
       method: 'delete',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
@@ -163,6 +173,7 @@ export class AdminComponent implements OnInit {
 
     const response = await fetch(`${environment.apiUrl}/delete2`, {
       method: 'delete',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
@@ -178,6 +189,7 @@ export class AdminComponent implements OnInit {
 
     const response = await fetch(`${environment.apiUrl}/delete3`, {
       method: 'delete',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
@@ -193,6 +205,7 @@ export class AdminComponent implements OnInit {
 
     const response = await fetch(`${environment.apiUrl}/delete4`, {
       method: 'delete',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
@@ -208,6 +221,7 @@ export class AdminComponent implements OnInit {
 
     const response = await fetch(`${environment.apiUrl}/delete5`, {
       method: 'delete',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}"}`
     });
     if (response.ok) {
@@ -225,6 +239,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad1")).innerHTML;
     const response = await fetch(`${environment.apiUrl}/update1`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -253,6 +268,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad2")).innerHTML;
     const response = await fetch(`${environment.apiUrl}/update2`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -288,6 +304,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad5")).innerHTML;
     const response = await fetch(`${environment.apiUrl}/update3`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -325,6 +342,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad4")).innerHTML;
     const response = await fetch(`${environment.apiUrl}/update4`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
@@ -361,6 +379,7 @@ export class AdminComponent implements OnInit {
     var a = (<HTMLInputElement>document.getElementById("ad3")).innerHTML;
     const response = await fetch(`${environment.apiUrl}/update5`, {
       method: 'POST',
+      headers: this.adminHeaders(),
       body: `{"user":"${name}","pwd":"${pwd}","p":"${p}","a":"${a}"}`
     });
     if (response.ok) {
