@@ -1,6 +1,4 @@
 import unittest
-
-import bcrypt
 from fastapi import HTTPException
 
 from MyDB.main import dish_table, hash_password, verify_password
